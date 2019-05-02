@@ -57,6 +57,9 @@ highlight ColorColumn ctermbg=Blue guibg=Black
 "Open nerd tree
 map <C-n> :NERDTreeToggle<CR>
 
+"Ubuntu terminal color
+"#300A24
+
 "All files
 colorscheme softblue
 set nu "line numbering
