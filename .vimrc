@@ -19,7 +19,9 @@ Plugin 'kien/ctrlp.vim'
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'jnurmine/Zenburn'
 Plugin 'flazz/vim-colorschemes'
-
+Plugin 'loremipsum'
+Plugin 'alvan/vim-closetag'
+Bundle 'Valloric/YouCompleteMe'
 " add all your plugins here (note older versions of Vundle
 " used Bundle instead of Plugin)
 
@@ -28,6 +30,13 @@ Plugin 'flazz/vim-colorschemes'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+"Personal config for YouCompleteMe
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+"Renamed commands
+ab lorem Loremipsum
 
 "split navigations
 set splitbelow
