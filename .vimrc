@@ -21,6 +21,7 @@ Plugin 'jnurmine/Zenburn'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'loremipsum'
 Plugin 'alvan/vim-closetag'
+Plugin 'benmills/vimux'
 Bundle 'Valloric/YouCompleteMe'
 " add all your plugins here (note older versions of Vundle
 " used Bundle instead of Plugin)
@@ -34,6 +35,9 @@ filetype plugin indent on    " required
 "Personal config for YouCompleteMe
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+"Remap vimux maybe?
+":nnoremap <buffer> <leader> xyz :call SomeFunc(input('Param: '))<CR>
 
 "Renamed commands
 ab lorem Loremipsum
