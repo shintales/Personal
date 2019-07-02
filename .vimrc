@@ -22,6 +22,8 @@ Plugin 'flazz/vim-colorschemes'
 Plugin 'loremipsum'
 Plugin 'alvan/vim-closetag'
 Plugin 'benmills/vimux'
+" Plugin 'majutsushi/tagbar'
+Plugin 'vim-scripts/taglist.vim'
 Bundle 'Valloric/YouCompleteMe'
 " add all your plugins here (note older versions of Vundle
 " used Bundle instead of Plugin)
@@ -35,6 +37,14 @@ filetype plugin indent on    " required
 "Personal config for YouCompleteMe
 let g:ycm_autoclose_preview_window_after_completion=1
 map <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+" Vim tagbar
+" set g:tagbar_ctags_bin
+" nmap <F8> :TagbarToggle<CR>
+
+" Taglist
+let Tlist_Use_Right_Window = 1
+nnoremap <silent> <F8> :TlistToggle<CR>
 
 "Remap vimux maybe?
 ":nnoremap <buffer> <leader> xyz :call SomeFunc(input('Param: '))<CR>
