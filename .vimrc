@@ -51,6 +51,16 @@ nnoremap <silent> <F8> :TlistToggle<CR>
 "Remap vimux maybe?
 ":nnoremap <buffer> <leader> xyz :call SomeFunc(input('Param: '))<CR>
 
+" Syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
 " Rainbow paranthesis
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
