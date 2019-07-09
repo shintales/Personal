@@ -23,6 +23,7 @@ Plugin 'loremipsum'
 Plugin 'alvan/vim-closetag'
 Plugin 'benmills/vimux'
 Plugin 'ryanoasis/vim-devicons'
+Plugin 'kien/rainbow_parentheses.vim'
 " Plugin 'majutsushi/tagbar'
 Plugin 'vim-scripts/taglist.vim'
 Bundle 'Valloric/YouCompleteMe'
@@ -49,6 +50,12 @@ nnoremap <silent> <F8> :TlistToggle<CR>
 
 "Remap vimux maybe?
 ":nnoremap <buffer> <leader> xyz :call SomeFunc(input('Param: '))<CR>
+
+" Rainbow paranthesis
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
 
 "Renamed commands
 ab lorem Loremipsum
