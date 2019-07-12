@@ -9,7 +9,7 @@ pacman -S pcmanfm
 #Panel
 pacman -S tint2
 #Terminal
-pacman -S xterm
+pacman -S gnome-terminal
 #Wallpaper setup
 pacman -S nitrogen gnome-backgrounds
 #Text editors
@@ -18,7 +18,7 @@ pacman -S vim
 pacman -S firefox
 #Menumaker
 pacman -S menumaker
-#mmaker openbox -f -t xterm
+#mmaker openbox -f -t gnome-terminal
 #right click and reconfigure openbox
 
 #enable greeter
