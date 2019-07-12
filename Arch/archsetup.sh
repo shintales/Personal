@@ -15,7 +15,11 @@ pacman -S nitrogen gnome-backgrounds
 #Text editors
 pacman -S vim
 #Web browser
-pacmam -S firefox
+pacman -S firefox
+#Menumaker
+pacman -S menumaker
+#mmaker openbox -f -t xterm
+#right click and reconfigure openbox
 
 #enable greeter
 systemctl enable lightdm.service
