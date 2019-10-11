@@ -89,6 +89,9 @@ nnoremap <space> za
 "Mouse support
 set mouse=a
 
+" Set the working directory to wherever the open file lives
+set autochdir
+
 "Search support
 set incsearch
 set hlsearch
