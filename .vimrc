@@ -61,6 +61,8 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
+silent! nmap <F6> :SyntasticToggleMode<CR>
+
 " Rainbow paranthesis
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
@@ -69,6 +71,12 @@ au Syntax * RainbowParenthesesLoadBraces
 
 "Renamed commands
 ab lorem Loremipsum
+
+" Tab support
+map <C-t><up> :tabr<cr>
+map <C-t><down> :tabl<cr>
+map <C-t><left> :tabp<cr>
+map <C-t><right> :tabn<cr>
 
 "split navigations
 set splitbelow
