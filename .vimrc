@@ -116,24 +116,30 @@ map <C-n> :NERDTreeToggle<CR>
 colorscheme softblue
 set nu "line numbering
 set clipboard=unnamed
+set autoindent
 set smartindent
+set pastetoggle=<F3>
 
 "Python files
 let python_highlight_all=1
 syntax on
 set encoding=utf-8
-au BufNewFile,BufRead *.py set tabstop=4
-au BufNewFile,BufRead *.py set softtabstop=4
-au BufNewFile,BufRead *.py set shiftwidth=4
-au BufNewFile,BufRead *.py set textwidth=79
-au BufNewFile,BufRead *.py set expandtab
-au BufNewFile,BufRead *.py set autoindent
-au BufNewFile,BufRead *.py set fileformat=unix
+au BufNewFile,BufRead *.py,*.cpp set 
+	\ tabstop=4
+	\ softtabstop=4
+	\ shiftwidth=4
+	" \ textwidth=79
+	\ fileformat=unix
+	\ expandtab
 
-"Full stack
-au BufNewFile,BufRead *.js, *.html, *.css set tabstop=2
-au BufNewFile,BufRead *.js, *.html, *.css set softtabstop=2
-au BufNewFile,BufRead *.js, *.html, *.css set shiftwidth=2
+
+" Frontend stack
+au BufNewFile,BufRead *.js,*.html,*.css set
+	\ tabstop=2
+	\ softtabstop=2
+	\ shiftwidth=2
+	\ fileformat=unix
+	\ expandtab
 
 "Flag unnecessary whitespace
 highlight BadWhiteSpace ctermbg=red guibg=darkred
