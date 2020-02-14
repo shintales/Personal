@@ -5,12 +5,19 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'flazz/vim-colorschemes'
 Plug 'tmhedberg/SimpylFold'
 Plug 'scrooloose/nerdtree'
+Plug 'vim-scripts/taglist.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
 call plug#end()
+
+
+" Taglist
+let Tlist_Use_Right_Window = 1
+let Tlist_Sort_Type = "name"
+nnoremap <silent> <F8> :TlistToggle<CR>
 
 " Tab support
 map <C-t><up> :tabr<cr>
