@@ -1,0 +1,7 @@
+# Use Switch Controller
+https://raw.githubusercontent.com/ValveSoftware/steam-devices/master/60-steam-input.rules
+copy this file into /lib/udev/rules.d/60-steam-input.rules 
+
+# Custom proton for danganronpa and more
+Download proton GE
+https://github.com/GloriousEggroll/proton-ge-custom#installation
