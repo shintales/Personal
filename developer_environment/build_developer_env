@@ -1,0 +1,81 @@
+#!/usr/bin/python3
+
+import requests
+import tarfile
+import os
+import subprocess
+import re
+
+# Handle node installation
+PREFIX = f"{os.path.expanduser('~')}/.develop"
+NODE_VERSION = "v14.16.1"
+NODE_TAR = f"node-{NODE_VERSION}-linux-x64.tar.xz"
+NODE_DIR = f"{PREFIX}/node-{NODE_VERSION}-linux-x64"
+NODE_LN = f"{PREFIX}/node"
+NODE_BINARIES = f"{NODE_LN}/bin"
+NODE_GLOBAL_DIR = f"{os.path.expanduser('~')}/.npm-global"
+
+# For cleanup
+download_history = []
+
+def download_file(url: str, FILE: str):
+    """
+    Download a file from the web
+
+    Args:
+        url (str): url location of file to download
+        FILE (str): name to save file as
+    """
+    r = requests.get(url, allow_redirects=True)
+    open(FILE, 'wb').write(r.content)
+    download_history.append(FILE)
+
+def untar(FILE: str, extract_format: str="", location: str="./"):
+    """
+    Untar a file
+
+    Args:
+        FILE (str): File to untar
+        extract_format (str, optional): The extraction format. Examples are xz,zip,etc. Defaults to "".
+        location (str, optional): Where to save file. Defaults to "./".
+    """
+    extract_format = f'r:{extract_format}' if extract_format == "" else "r" 
+    with tarfile.open(FILE, extract_format) as t:
+        t.extractall(location)
+
+def export_variable(FILE: str, path: str):
+    """
+    Export environment variables to .bashrc and current python execution
+
+    Args:
+        FILE (str): File to export to
+        path (str): the value to be added to PATH environment
+    """
+    with open(FILE, "r+") as f:
+        content = f.readlines()
+        for line in content:
+            if re.search(f"{path}", line):
+                print("Variable already exists")
+                return
+        f.write("\n# Set the path for nodejs binaries\n")
+        f.write(f"export PATH={path}:$PATH\n")
+        os.environ['PATH'] = f"{path}:{os.environ['PATH']}"
+
+def install_rust():
+    filename = "rustup-init.sh"
+    download_file("https://sh.rustup.rs", filename)
+    subprocess.call(f"bash {filename}".split())
+
+if __name__ == "__main__":
+    if not os.path.isdir(PREFIX):
+        os.mkdir(PREFIX)
+    try:
+        download_file(f"https://nodejs.org/dist/{NODE_VERSION}/{NODE_TAR}", NODE_TAR)
+        untar(NODE_TAR, "xz", PREFIX)
+        os.symlink(NODE_DIR, NODE_LN)
+        export_variable(f"{os.path.expanduser('~')}/.bashrc", NODE_BINARIES)
+        subprocess.call(f"{NODE_BINARIES}/npm config set prefix {NODE_GLOBAL_DIR}".split())
+        install_rust()
+    finally:
+        for FILE in download_history:
+            os.remove(FILE)
