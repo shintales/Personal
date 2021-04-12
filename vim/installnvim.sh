@@ -8,3 +8,6 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.g
 rm nvim.appimage
 sudo apt install -y python3-pip clangd node npm
 pip3 install neovim
+
+sudo apt-get install exuberant-ctags
+sudo apt install fonts-hack-ttf
