@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-import requests
 import tarfile
 import os
 import subprocess
 import re
+import requests
 
 # Handle node installation
 PREFIX = f"{os.path.expanduser('~')}/.develop"
@@ -61,7 +61,21 @@ def export_variable(FILE: str, path: str):
         f.write(f"export PATH={path}:$PATH\n")
         os.environ['PATH'] = f"{path}:{os.environ['PATH']}"
 
+def install_node():
+    """
+    Install node and npm
+    """
+    download_file(f"https://nodejs.org/dist/{NODE_VERSION}/{NODE_TAR}", NODE_TAR)
+    untar(NODE_TAR, "xz", PREFIX)
+    os.symlink(NODE_DIR, NODE_LN)
+    export_variable(f"{os.path.expanduser('~')}/.bashrc", NODE_BINARIES)
+    #subprocess.call(f"{NODE_BINARIES}/npm config set prefix {NODE_GLOBAL_DIR}".split())
+
+
 def install_rust():
+    """
+    Install rust
+    """
     filename = "rustup-init.sh"
     download_file("https://sh.rustup.rs", filename)
     subprocess.call(f"bash {filename}".split())
@@ -70,12 +84,8 @@ if __name__ == "__main__":
     if not os.path.isdir(PREFIX):
         os.mkdir(PREFIX)
     try:
-        download_file(f"https://nodejs.org/dist/{NODE_VERSION}/{NODE_TAR}", NODE_TAR)
-        untar(NODE_TAR, "xz", PREFIX)
-        os.symlink(NODE_DIR, NODE_LN)
-        export_variable(f"{os.path.expanduser('~')}/.bashrc", NODE_BINARIES)
-        subprocess.call(f"{NODE_BINARIES}/npm config set prefix {NODE_GLOBAL_DIR}".split())
-        install_rust()
+        install_node()
+        #install_rust()
     finally:
         for FILE in download_history:
             os.remove(FILE)
