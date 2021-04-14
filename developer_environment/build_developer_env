@@ -61,13 +61,20 @@ def export_variable(FILE: str, path: str):
         f.write(f"export PATH={path}:$PATH\n")
         os.environ['PATH'] = f"{path}:{os.environ['PATH']}"
 
+def symlink(target: str, link_name: str):
+    try:
+        os.symlink(target, link_name)
+    except FileExistsError:
+        os.remove(link_name)
+        os.symlink(target, link_name)
+
 def install_node():
     """
     Install node and npm
     """
     download_file(f"https://nodejs.org/dist/{NODE_VERSION}/{NODE_TAR}", NODE_TAR)
     untar(NODE_TAR, "xz", PREFIX)
-    os.symlink(NODE_DIR, NODE_LN)
+    symlink(NODE_DIR, NODE_LN)
     export_variable(f"{os.path.expanduser('~')}/.bashrc", NODE_BINARIES)
     #subprocess.call(f"{NODE_BINARIES}/npm config set prefix {NODE_GLOBAL_DIR}".split())
 
@@ -85,7 +92,7 @@ if __name__ == "__main__":
         os.mkdir(PREFIX)
     try:
         install_node()
-        #install_rust()
+        install_rust()
     finally:
         for FILE in download_history:
             os.remove(FILE)
