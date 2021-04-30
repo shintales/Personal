@@ -1,7 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
-" Plug 'neovim/nvim-lsp'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neovim/nvim-lsp'
+Plug 'nvim-lua/completion-nvim'
+Plug 'ziglang/zig.vim'
 Plug 'flazz/vim-colorschemes'
 Plug 'tmhedberg/SimpylFold'
 Plug 'scrooloose/nerdtree'
@@ -57,6 +58,9 @@ highlight ColorColumn ctermbg=Blue guibg=Black
 "Open nerd tree
 map <C-n> :NERDTreeToggle<CR>
 
+" Open the existing NERDTree on each new tab.
+autocmd BufWinEnter * silent NERDTreeMirror
+
 "Ubuntu terminal color
 "#300A24
 
@@ -68,28 +72,15 @@ set autoindent
 set smartindent
 set pastetoggle=<F3>
 
-"Python files
-let python_highlight_all=1
-syntax on
-set encoding=utf-8
-au BufNewFile,BufRead *.py,*.cpp set 
-	\ tabstop=4
-	\ softtabstop=4
-	\ shiftwidth=4
-	\ fileformat=unix
-	\ expandtab
-
-
-" Frontend stack
-au BufNewFile,BufRead *.js,*.html,*.css set
-	\ tabstop=2
-	\ softtabstop=2
-	\ shiftwidth=2
-	\ fileformat=unix
-	\ expandtab
-
 "Flag unnecessary whitespace
 highlight BadWhiteSpace ctermbg=red guibg=darkred
 au BufNewFile,BufRead *.py,*.pyw,*.c,*.cpp,*.h,*.hpp match BadWhiteSpace /\s\+$/
 
-source $HOME/.config/nvim/plug-config/coc.vim
+" Add zig lsp
+source $HOME/.config/nvim/ziglsp.vim
+
+" Add web 
+source $HOME/.config/nvim/web.vim
+
+" Add python
+source $HOME/.config/nvim/python.vim

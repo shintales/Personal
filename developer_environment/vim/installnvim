@@ -7,7 +7,7 @@ install() {
 install_nvim() {
 	curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
 	vim=/usr/bin/vim
-	chmod a+rx $vim
+	chmod a+rx nvim.appimage
 	sudo mv nvim.appimage $vim
 }
 
@@ -22,4 +22,12 @@ install_nvim_plugin_manager() {
 	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
 
-install
+install_zig_lsp() {
+	git clone --recurse-submodules https://github.com/zigtools/zls
+	cd zls
+	zig build -Drelease-safe
+	./zig-cache/bin/zls config
+	cp ./zls/zig-cache/bin/zls ~/.develop/bin
+}
+
+$@
