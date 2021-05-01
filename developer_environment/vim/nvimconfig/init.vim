@@ -76,11 +76,14 @@ set pastetoggle=<F3>
 highlight BadWhiteSpace ctermbg=red guibg=darkred
 au BufNewFile,BufRead *.py,*.pyw,*.c,*.cpp,*.h,*.hpp match BadWhiteSpace /\s\+$/
 
+" Add start screen config
+source $HOME/.config/nvim/plug-config/start-screen.vim
+
 " Add zig lsp
-source $HOME/.config/nvim/ziglsp.vim
+source $HOME/.config/nvim/plug-config/ziglsp.vim
 
 " Add web 
-source $HOME/.config/nvim/web.vim
+source $HOME/.config/nvim/plug-config/web.vim
 
 " Add python
-source $HOME/.config/nvim/python.vim
+source $HOME/.config/nvim/plug-config/python.vim

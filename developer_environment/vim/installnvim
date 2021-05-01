@@ -7,13 +7,15 @@ install() {
 install_nvim() {
 	curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
 	vim=/usr/bin/vim
-	chmod a+rx nvim.appimage
 	sudo mv nvim.appimage $vim
+	sudo chown root:root $vim
+	sudo chmod a+rx $vim
 }
 
 install_nvim_config() {
-	mkdir -p ~/.config/nvim
+	mkdir -p ~/.config/nvim/plug-config
 	cp nvimconfig/init.vim ~/.config/nvim/init.vim
+	cp nvimconfig/plug-config/* ~/.config/nvim/plug-config/
 }
 
 install_nvim_plugin_manager() {
@@ -27,7 +29,8 @@ install_zig_lsp() {
 	cd zls
 	zig build -Drelease-safe
 	./zig-cache/bin/zls config
-	cp ./zls/zig-cache/bin/zls ~/.develop/bin
+	dest=~/.develop/bin/
+	mkdir -p $dest && cp ./zig-cache/bin/zls $dest
 }
 
 $@
