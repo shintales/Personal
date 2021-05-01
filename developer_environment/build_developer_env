@@ -9,16 +9,24 @@ from config import *
 download_history = History()
 utilities = Utilities(download_history)
 
-def install_nvm():
-    utilities.download_and_execute(f"https://raw.githubusercontent.com/nvm-sh/nvm/v{NVM_VERSION}/install.sh", "bash")
+class NodeInstaller():
+    @staticmethod
+    def install():
+        NodeInstaller.__install_nvm()
 
-def install_rust():
-    """
-    Install rust
-    """
-    filename = "rustup-init.sh"
-    utilities.download_file("https://sh.rustup.rs", filename)
-    sp.call(f"bash {filename}".split())
+    @staticmethod
+    def __install_nvm():
+        utilities.download_and_execute(f"https://raw.githubusercontent.com/nvm-sh/nvm/v{NVM_VERSION}/install.sh", "bash")
+
+class RustInstaller():
+    @staticmethod
+    def install():
+        """
+        Install rust
+        """
+        filename = "rustup-init.sh"
+        utilities.download_file("https://sh.rustup.rs", filename)
+        sp.call(f"bash {filename}".split())
 
 class ZigInstaller():
     def __init__(self):
@@ -59,7 +67,7 @@ if __name__ == "__main__":
         os.mkdir(PREFIX)
     try:
         #ZigInstaller.install()
-        #install_nvm()
-        install_rust()
+        NodeInstaller.install()
+        RustInstaller.install()
     finally:
         download_history.clean()
