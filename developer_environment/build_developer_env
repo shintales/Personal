@@ -29,9 +29,6 @@ class RustInstaller():
         sp.call(f"bash {filename}".split())
 
 class ZigInstaller():
-    def __init__(self):
-        pass
-
     @staticmethod
     def install():
         ZigInstaller.install_zig()

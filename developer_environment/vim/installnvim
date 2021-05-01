@@ -16,21 +16,13 @@ install_nvim_config() {
 	mkdir -p ~/.config/nvim/plug-config
 	cp nvimconfig/init.vim ~/.config/nvim/init.vim
 	cp nvimconfig/plug-config/* ~/.config/nvim/plug-config/
+	vim +'PlugInstall --sync' +qa
 }
 
 install_nvim_plugin_manager() {
 	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim \
 	--create-dirs \
 	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-}
-
-install_zig_lsp() {
-	git clone --recurse-submodules https://github.com/zigtools/zls
-	cd zls
-	zig build -Drelease-safe
-	./zig-cache/bin/zls config
-	dest=~/.develop/bin/
-	mkdir -p $dest && cp ./zig-cache/bin/zls $dest
 }
 
 $@
