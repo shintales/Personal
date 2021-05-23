@@ -9,7 +9,6 @@ from config import *
 import argparse
 parser = argparse.ArgumentParser(description='Add some integers.')
 parser.add_argument('install', help='list of apps to install')
-parser.add_argument('install', help='list of apps to remove')
 parser.add_argument('--zig', action='store_true',
                     help='install zig')
 parser.add_argument('--node', action='store_true',

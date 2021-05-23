@@ -1,5 +1,6 @@
 import tarfile
 import os
+import shutil
 import subprocess as sp
 import re
 import requests
@@ -14,7 +15,10 @@ class History():
         
     def clean(self):
         for FILE in self.download_history:
-            os.remove(FILE)
+            if os.path.isdir(FILE):
+                shutil.rmtree(FILE)
+            else:
+                os.remove(FILE)
 
 class Utilities():
     def __init__(self, history: Optional[History] = None):
