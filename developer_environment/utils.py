@@ -22,8 +22,7 @@ class History():
 
 class Utilities():
     def __init__(self, history: Optional[History] = None):
-        if history != None:
-            self.download_history = history
+        self.download_history = history
 
     def __download_history_add(self, FILE: str):
         if self.download_history:

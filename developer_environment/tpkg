@@ -11,13 +11,17 @@ parser = argparse.ArgumentParser(description='Add some integers.')
 parser.add_argument('install', help='list of apps to install')
 parser.add_argument('--zig', action='store_true',
                     help='install zig')
+parser.add_argument('--zig-dev', action='store_true',
+                    help='install zig dev')
 parser.add_argument('--node', action='store_true',
                     help='install node')
 parser.add_argument('--rust', action='store_true',
                     help='install rust')
+parser.add_argument('--zls', action='store_true',
+                    help='install zls')
 parser.add_argument('--all', action='store_true',
                     help='install all')
-                    
+
 args = parser.parse_args()
 
 download_history = History()
@@ -44,29 +48,32 @@ class RustInstaller():
 
 class ZigInstaller():
     @staticmethod
-    def install():
-        ZigInstaller.install_zig()
-        #ZigInstaller.install_zls()
-
-    @staticmethod
-    def install_zig():
+    def install(dev: bool=False):
         """
         Install zig
         """
         ZIG_TAR = "zig.tar.xz"
-        
-        ZIG_DEV_DIR = f"{PREFIX}/zig-linux-x86_64-0.8.0-dev.2064+da9da76e3"
-        ZIG_STABLE_DIR = f"{PREFIX}/zig-linux-x86_64-0.7.1"
-        
+
+        ZIG_DIR = f"{PREFIX}/zig-linux-x86_64-0.8.0-dev.2064+da9da76e3" \
+                if dev else f"{PREFIX}/zig-linux-x86_64-0.7.1"
+
         ZIG_LN = f"{PREFIX}/zig"
         ZIG_BINARIES = ZIG_LN
-        
-        
-        #utilities.download_file("https://ziglang.org/builds/zig-linux-x86_64-0.8.0-dev.2064+da9da76e3.tar.xz", ZIG_TAR)
-        utilities.download_file("https://ziglang.org/download/0.7.1/zig-linux-x86_64-0.7.1.tar.xz", ZIG_TAR)
+
+
+        if dev:
+            utilities.download_file("https://ziglang.org/builds/zig-linux-x86_64-0.8.0-dev.2064+da9da76e3.tar.xz", ZIG_TAR)
+        else:
+            utilities.download_file("https://ziglang.org/download/0.7.1/zig-linux-x86_64-0.7.1.tar.xz", ZIG_TAR)
         utilities.untar(ZIG_TAR, "xz", PREFIX)
-        utilities.symlink(ZIG_STABLE_DIR, ZIG_LN)
+        utilities.symlink(ZIG_DIR, ZIG_LN)
         utilities.export_variable(f"{USER_HOME}/.bashrc", ZIG_BINARIES)
+
+
+class ZlsInstaller():
+    @staticmethod
+    def install():
+        ZlsInstaller.install_zls()
 
     @staticmethod
     def install_zls():
@@ -81,13 +88,17 @@ class ZigInstaller():
                 shutil.copy("./zls/zig-cache/bin/zls", destination)
         finally:
             os.chdir("..")
-            
+
 def main():
     if not os.path.isdir(PREFIX):
         os.mkdir(PREFIX)
     try:
         if (args.zig):
             ZigInstaller.install()
+        if (args.zig_dev):
+            ZigInstaller.install(True)
+        if (args.zls):
+            ZlsInstaller.install()
         if (args.node):
             NodeInstaller.install()
         if (args.rust):
