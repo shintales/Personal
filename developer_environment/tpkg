@@ -55,7 +55,7 @@ class ZigInstaller():
         ZIG_TAR = "zig.tar.xz"
 
         ZIG_DIR = f"{PREFIX}/zig-linux-x86_64-0.8.0-dev.2064+da9da76e3" \
-                if dev else f"{PREFIX}/zig-linux-x86_64-0.7.1"
+                if dev else f"{PREFIX}/zig-linux-x86_64-0.8.0"
 
         ZIG_LN = f"{PREFIX}/zig"
         ZIG_BINARIES = ZIG_LN
@@ -64,7 +64,7 @@ class ZigInstaller():
         if dev:
             utilities.download_file("https://ziglang.org/builds/zig-linux-x86_64-0.8.0-dev.2064+da9da76e3.tar.xz", ZIG_TAR)
         else:
-            utilities.download_file("https://ziglang.org/download/0.7.1/zig-linux-x86_64-0.7.1.tar.xz", ZIG_TAR)
+            utilities.download_file("https://ziglang.org/download/0.8.0/zig-linux-x86_64-0.8.0.tar.xz", ZIG_TAR)
         utilities.untar(ZIG_TAR, "xz", PREFIX)
         utilities.symlink(ZIG_DIR, ZIG_LN)
         utilities.export_variable(f"{USER_HOME}/.bashrc", ZIG_BINARIES)
