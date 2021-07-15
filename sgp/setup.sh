@@ -40,7 +40,7 @@ setup_guest_os_privileges() {
 	sudo usermod -aG kvm,input,libvirt $USER
 }
 
-# Create VM
+# Create VM and complete install
 new_vm() {
 	virt-install --name=linuxconfig-vm \
 		--vcpus=1 \
@@ -57,12 +57,16 @@ new_vm() {
 }
 
 attach_pci_devices() {
-	echo "empty"
-
+	virt-xml $GUEST_NAME --remove-device --channel spicevmc
+	virt-xml $GUEST_NAME --remove-device --graphics spice
+	virt-xml $GUEST_NAME --remove-device --video qxl
+	virt-xml $GUEST_NAME --remove-device --sound ich9
+	
+	virt-xml $GUEST_NAME --add-device --hostdev pci
 }
 
 libvirt_hooks() {
-	source install_libvirt_hook.sh GUEST_NAME=win10
+	source install_libvirt_hook.sh $GUEST_NAME
 }
 
 keyboard_mouse_passthrough() {
