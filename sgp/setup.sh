@@ -1,5 +1,18 @@
 #!/bin/bash
 
+enable_iommu() {
+	# GRUB_CMDLINE_LINUX_DEFAULT="... intel_iommu=on iommu=pt ..."
+	# or
+	# GRUB_CMDLINE_LINUX_DEFAULT="... amd_iommu=on iommu=pt ..."
+
+	# grub-mkconfig -o /boot/grub/grub.cfg
+	echo "Please reboot your system"
+}
+
+verify_iommu() {
+	sudo dmesg | grep -q 'IOMMU enabled'
+}
+
 # Install Required Tools for Ubuntu
 install_ubuntu_tools() {
 	sudo apt-get update
@@ -44,6 +57,7 @@ new_vm() {
 }
 
 attach_pci_devices() {
+	echo "empty"
 
 }
 
@@ -52,19 +66,32 @@ libvirt_hooks() {
 }
 
 keyboard_mouse_passthrough() {
+	echo "empty"
 
 }
 
 audio_passthrough() {
+	echo "empty"
 
 }
 
 video_card_driver_virtualisation_detection() {
+	echo "empty"
 
 }
 
 vbios_patching() {
+	echo "empty"
 
 }
 
+install() {
+	if verify_iommu; then
+		install_ubuntu_tools
+		enable_required_services
+		setup_guest_os_privileges
+	else
+		echo "iommu is not enabled. Cannot proceed"
+	fi
+}
 $@
