@@ -1,13 +1,52 @@
 #!/bin/bash
 
-mkdir -p $OUTPUT
-mkdir -p $OUTPUT/thunar
-mkdir -p $OUTPUT/xfce-settings
+main() {
+	OUTPUT=$1
+	mkdir -p $OUTPUT
+	mkdir -p $OUTPUT/thunar
+	mkdir -p $OUTPUT/xfce-settings
+	mkdir -p $OUTPUT/themes
+	mkdir -p $OUTPUT/icons
+	mkdir -p $OUTPUT/backgrounds
 
-cp -R ~/.config/Thunar/ $OUTPUT/thunar
-cp -R ~/.config/xfce4/ $OUTPUT/xfce-settings
+	cp -R ~/.config/Thunar/ $OUTPUT/thunar
+	cp -R ~/.config/xfce4/ $OUTPUT/xfce-settings
 
-cp -R ~/.icons $OUTPUT/icons
-cp -R ~/.themes $OUTPUT/themes
+	SETTINGS_XML=manjaro/xfce-settings/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+	THEMENAME=$(xmllint --xpath 'string(//property[@name="ThemeName"]/@value)' $SETTINGS_XML)
+	ICONTHEMENAME=$(xmllint --xpath 'string(//property[@name="IconThemeName"]/@value)' $SETTINGS_XML)
+	MENUICON=$(grep ^button-icon manjaro/xfce-settings/xfce4/panel/whiskermenu-8.rc | awk -F "=" '{print $2}')
 
-tar -czvf $OUTPUT.tar.gz $OUTPUT
+	backup_theme icons $ICONTHEMENAME
+
+	backup_theme themes $THEMENAME
+
+	cp $MENUICON $OUTPUT/icons
+    sed -i "s/\/usr\/share\/icons/~\/.icons/" $OUTPUT/xfce-settings/xfce4/panel/whiskermenu-8.rc
+
+    tar -czvf $OUTPUT.tar.gz $OUTPUT
+}
+
+backup_theme() {
+    FOLDER=$1
+    THEMEPACK=$2
+    if [[ -d "/usr/share/$FOLDER/$THEMEPACK" ]]
+    then
+            THEMEDIR=/usr/share/$FOLDER
+    else
+            THEMEDIR=~/.$FOLDER
+    fi
+
+	my_array=($(echo $THEMEPACK | tr "-" "\n"))
+	ORIGINTHEME=${my_array[0]}
+
+	cp -R $THEMEDIR/$ORIGINTHEME/ $OUTPUT/$FOLDER
+	cp -R $THEMEDIR/$THEMEPACK/ $OUTPUT/$FOLDER
+}
+
+backup_background() {
+	THEMENAME=$(xmllint --xpath 'string(//property[@name="ThemeName"]/@value)' $SETTINGS_XML)
+    sed -i "s/\/usr\/share\/backgrounds/.backgrounds/" $OUTPUT/xfce-settings/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+}
+
+main $1

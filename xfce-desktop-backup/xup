@@ -1,0 +1,91 @@
+#!/usr/bin/python3
+import sys
+import pathlib
+import shutil
+import tarfile
+import os
+import xml.dom.minidom
+import shutil
+
+backup_dir = sys.argv[1];
+
+def setup_directories():
+    folders = ["thunar", "xfce-settings", "themes", "icons", "backgrounds"]
+    for folder in folders:
+        pathlib.Path( f'{backup_dir}/{folder}' ).mkdir( parents=True, exist_ok=True )
+
+def backup():
+    copy_tree(f"{os.path.expanduser('~')}/.config/Thunar/", f"{backup_dir}/thunar/")
+    copy_tree(f"{os.path.expanduser('~')}/.config/xfce4/", f"{backup_dir}/xfce-settings/")
+
+    settings_xml = f"{backup_dir}/xfce-settings/xfconf/xfce-perchannel-xml/xsettings.xml"
+    icon_theme_name = get_xml_property_value(settings_xml, "IconThemeName")
+    theme_name = get_xml_property_value(settings_xml, "ThemeName")
+
+    backup_theme("icons", icon_theme_name)
+    backup_theme("themes", theme_name)
+
+    backup_background()
+
+    replace_in_file(f'{backup_dir}/xfce-settings/panel/whiskermenu-8.rc', '/usr/share/icons', '~/.icons')
+
+    with tarfile.open(f"{backup_dir}.tar.gz", "w:gz") as tar_handle:
+        tar_handle.add(backup_dir)
+
+def backup_theme(folder: str, theme_pack: str):
+    if pathlib.Path(f"/usr/share/{folder}/{theme_pack}").exists():
+        theme_dir = f"/usr/share/{folder}"
+    else:
+        theme_dir = f"{os.path.expanduser('~')}/.{folder}"
+
+    origin_theme = theme_pack.split("-")[0]
+    if pathlib.Path(f"{theme_dir}/{origin_theme}").exists():
+        copy_tree(f"{theme_dir}/{origin_theme}/", f"{backup_dir}/{folder}/{origin_theme}")
+    copy_tree(f"{theme_dir}/{theme_pack}/", f"{backup_dir}/{folder}/{theme_pack}")
+
+def backup_background():
+    image_properties = ["image-path", "last-image", "last-single-image"]
+    xfce_desktop_xml = f'{backup_dir}/xfce-settings/xfconf/xfce-perchannel-xml/xfce4-desktop.xml'
+    dom = xml.dom.minidom.parse(xfce_desktop_xml)
+    for xml_property in dom.getElementsByTagName('property'):
+        if xml_property.getAttribute("name") in image_properties:
+            image_path = xml_property.getAttribute("value")
+            image_name = image_path.split('/')[-1]
+            shutil.copy(image_path, f"{backup_dir}/backgrounds/{image_name}")
+            xml_property.setAttribute("value", f"~/.backgrounds/{image_name}")
+    with open(xfce_desktop_xml,"w") as xml_handle:
+        dom.writexml(xml_handle)
+    #replace_in_file(xfce_desktop_xml, '/usr/share/backgrounds', '~/.backgrounds')
+
+def restore():
+    with tarfile.open(f"{backup_dir}.tar.gz", "w:gz") as tar_handle:
+        tar_handle.extractall()
+    
+    copy_tree(f"{backup_dir}/xfce-settings", f"{os.path.expanduser('~')}/.config/xfce4")
+    copy_tree(f"{backup_dir}/thunar", f"{os.path.expanduser('~')}/.config/Thunar")
+    copy_tree(f"{backup_dir}/icons", f"{os.path.expanduser('~')}/.icons")
+    copy_tree(f"{backup_dir}/themes", f"{os.path.expanduser('~')}/.themes")
+    copy_tree(f"{backup_dir}/backgrounds", f"{os.path.expanduser('~')}/.backgrounds")
+
+def replace_in_file(FILE: str, search: str, replace: str):
+    with open(FILE, 'r') as file:
+        filedata = file.read()
+
+    with open(FILE, 'w') as file:
+        filedata = filedata.replace(search, replace)
+        file.write(filedata)
+
+def get_xml_property_value(xml_file: str, xml_property_name: str) -> str:
+    dom = xml.dom.minidom.parse(xml_file)
+    properties = dom.getElementsByTagName('property')
+    for xml_property in properties:
+        if xml_property.getAttribute("name") == xml_property_name:
+            return xml_property.getAttribute("value")
+
+def copy_tree(src: str, dest: str):
+    shutil.copytree(src, dest, symlinks=True, dirs_exist_ok=True)
+
+if __name__ == "__main__":
+    setup_directories()
+    backup()
+    #restore()
