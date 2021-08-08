@@ -1,0 +1,13 @@
+#!/bin/bash
+
+mkdir -p $OUTPUT
+mkdir -p $OUTPUT/thunar
+mkdir -p $OUTPUT/xfce-settings
+
+cp -R ~/.config/Thunar/ $OUTPUT/thunar
+cp -R ~/.config/xfce4/ $OUTPUT/xfce-settings
+
+cp -R ~/.icons $OUTPUT/icons
+cp -R ~/.themes $OUTPUT/themes
+
+tar -czvf $OUTPUT.tar.gz $OUTPUT

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+tar -xzvf $BACKUP_NAME.tar.gz -C ~/
+
+mv $BACKUP_NAME/xfce-settings/* ~/.config
+mv $BACKUP_NAME/thunar/* ~/.config
+mv $BACKUP_NAME/icons/* ~/.icons
+mv $BACKUP_NAME/themes/* ~/.themes
