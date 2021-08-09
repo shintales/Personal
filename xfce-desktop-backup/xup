@@ -2,10 +2,10 @@
 import sys
 import pathlib
 import shutil
-import tarfile
 import os
 import xml.dom.minidom
 import shutil
+import subprocess
 
 backup_dir = sys.argv[1];
 
@@ -29,8 +29,7 @@ def backup():
 
     handle_whisker()
 
-    with tarfile.open(f"{backup_dir}.tar.gz", "w:gz") as tar_handle:
-        tar_handle.add(backup_dir)
+    subprocess.run(f"tar -czf {backup_dir}.tar.gz {backup_dir}".split())
 
 def backup_theme(folder: str, theme_pack: str):
     if pathlib.Path(f"/usr/share/{folder}/{theme_pack}").exists():
