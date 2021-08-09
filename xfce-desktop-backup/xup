@@ -27,7 +27,7 @@ def backup():
 
     backup_background()
 
-    replace_in_file(f'{backup_dir}/xfce-settings/panel/whiskermenu-8.rc', '/usr/share/icons', '~/.icons')
+    handle_whisker()
 
     with tarfile.open(f"{backup_dir}.tar.gz", "w:gz") as tar_handle:
         tar_handle.add(backup_dir)
@@ -67,6 +67,18 @@ def restore():
     copy_tree(f"{backup_dir}/themes", f"{os.path.expanduser('~')}/.themes")
     copy_tree(f"{backup_dir}/backgrounds", f"{os.path.expanduser('~')}/.backgrounds")
 
+def handle_whisker():
+    files = pathlib.Path(f'{backup_dir}/xfce-settings/panel').glob('**/*')
+    for FILE in files:
+        FILE = str(FILE)
+        with open(FILE) as f:
+            for line in f:
+                if "button-icon" in line:
+                    shutil.copy(line.strip().split("=")[-1], f"{os.path.expanduser('~')}/.icons")
+                    break
+            break
+    replace_in_file(FILE, '/usr/share/icons', '~/.icons')
+
 def replace_in_file(FILE: str, search: str, replace: str):
     with open(FILE, 'r') as file:
         filedata = file.read()
@@ -89,3 +101,4 @@ if __name__ == "__main__":
     setup_directories()
     backup()
     #restore()
+    #handle_whisker()
