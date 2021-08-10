@@ -6,6 +6,7 @@ import os
 import xml.dom.minidom
 import shutil
 import subprocess
+from distutils.dir_util import copy_tree
 
 backup_dir = ""
 user_path = ""
@@ -92,8 +93,8 @@ def get_xml_property_value(xml_file: str, xml_property_name: str) -> str:
         if xml_property.getAttribute("name") == xml_property_name:
             return xml_property.getAttribute("value")
 
-def copy_tree(src: str, dest: str):
-    shutil.copytree(src, dest, symlinks=True, dirs_exist_ok=True)
+#def copy_tree(src: str, dest: str):
+#    shutil.copytree(src, dest, symlinks=True, dirs_exist_ok=True)
 
 if __name__ == "__main__":
     if len(sys.argv) == 3:
