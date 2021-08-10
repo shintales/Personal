@@ -8,6 +8,7 @@ import shutil
 import subprocess
 
 backup_dir = sys.argv[1];
+user_path = os.path.expanduser('~')
 
 def setup_directories():
     folders = ["thunar", "xfce-settings", "themes", "icons", "backgrounds"]
@@ -15,8 +16,8 @@ def setup_directories():
         pathlib.Path( f'{backup_dir}/{folder}' ).mkdir( parents=True, exist_ok=True )
 
 def backup():
-    copy_tree(f"{os.path.expanduser('~')}/.config/Thunar/", f"{backup_dir}/thunar/")
-    copy_tree(f"{os.path.expanduser('~')}/.config/xfce4/", f"{backup_dir}/xfce-settings/")
+    copy_tree(f"{user_path}/.config/Thunar/", f"{backup_dir}/thunar/")
+    copy_tree(f"{user_path}/.config/xfce4/", f"{backup_dir}/xfce-settings/")
 
     settings_xml = f"{backup_dir}/xfce-settings/xfconf/xfce-perchannel-xml/xsettings.xml"
     icon_theme_name = get_xml_property_value(settings_xml, "IconThemeName")
@@ -35,7 +36,7 @@ def backup_theme(folder: str, theme_pack: str):
     if pathlib.Path(f"/usr/share/{folder}/{theme_pack}").exists():
         theme_dir = f"/usr/share/{folder}"
     else:
-        theme_dir = f"{os.path.expanduser('~')}/.{folder}"
+        theme_dir = f"{user_path}/.{folder}"
 
     origin_theme = theme_pack.split("-")[0]
     if pathlib.Path(f"{theme_dir}/{origin_theme}").exists():
@@ -54,17 +55,15 @@ def backup_background():
             xml_property.setAttribute("value", f"~/.backgrounds/{image_name}")
     with open(xfce_desktop_xml,"w") as xml_handle:
         dom.writexml(xml_handle)
-    #replace_in_file(xfce_desktop_xml, '/usr/share/backgrounds', '~/.backgrounds')
 
 def restore():
-    with tarfile.open(f"{backup_dir}.tar.gz", "w:gz") as tar_handle:
-        tar_handle.extractall()
+    subprocess.run(f"tar -xzf {backup_dir}.tar.gz".split())
     
-    copy_tree(f"{backup_dir}/xfce-settings", f"{os.path.expanduser('~')}/.config/xfce4")
-    copy_tree(f"{backup_dir}/thunar", f"{os.path.expanduser('~')}/.config/Thunar")
-    copy_tree(f"{backup_dir}/icons", f"{os.path.expanduser('~')}/.icons")
-    copy_tree(f"{backup_dir}/themes", f"{os.path.expanduser('~')}/.themes")
-    copy_tree(f"{backup_dir}/backgrounds", f"{os.path.expanduser('~')}/.backgrounds")
+    copy_tree(f"{backup_dir}/xfce-settings", f"{user_path}/.config/xfce4")
+    copy_tree(f"{backup_dir}/thunar", f"{user_path}/.config/Thunar")
+    copy_tree(f"{backup_dir}/icons", f"{user_path}/.icons")
+    copy_tree(f"{backup_dir}/themes", f"{user_path}/.themes")
+    copy_tree(f"{backup_dir}/backgrounds", f"{user_path}/.backgrounds")
 
 def handle_whisker():
     files = pathlib.Path(f'{backup_dir}/xfce-settings/panel').glob('**/*')
@@ -73,7 +72,7 @@ def handle_whisker():
         with open(FILE) as f:
             for line in f:
                 if "button-icon" in line:
-                    shutil.copy(line.strip().split("=")[-1], f"{os.path.expanduser('~')}/.icons")
+                    shutil.copy(line.strip().split("=")[-1], f"{user_path}/.icons")
                     break
             break
     replace_in_file(FILE, '/usr/share/icons', '~/.icons')
