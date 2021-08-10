@@ -17,8 +17,8 @@ def setup_directories():
         pathlib.Path( f'{backup_dir}/{folder}' ).mkdir( parents=True, exist_ok=True )
 
 def backup():
-    copy_tree(f"{user_path}/.config/Thunar/", f"{backup_dir}/thunar/")
-    copy_tree(f"{user_path}/.config/xfce4/", f"{backup_dir}/xfce-settings/")
+    wrap_copy_tree(f"{user_path}/.config/Thunar/", f"{backup_dir}/thunar/")
+    wrap_copy_tree(f"{user_path}/.config/xfce4/", f"{backup_dir}/xfce-settings/")
 
     settings_xml = f"{backup_dir}/xfce-settings/xfconf/xfce-perchannel-xml/xsettings.xml"
     icon_theme_name = get_xml_property_value(settings_xml, "IconThemeName")
@@ -41,8 +41,8 @@ def backup_theme(folder: str, theme_pack: str):
 
     origin_theme = theme_pack.split("-")[0]
     if pathlib.Path(f"{theme_dir}/{origin_theme}").exists():
-        copy_tree(f"{theme_dir}/{origin_theme}/", f"{backup_dir}/{folder}/{origin_theme}")
-    copy_tree(f"{theme_dir}/{theme_pack}/", f"{backup_dir}/{folder}/{theme_pack}")
+        wrap_copy_tree(f"{theme_dir}/{origin_theme}/", f"{backup_dir}/{folder}/{origin_theme}")
+    wrap_copy_tree(f"{theme_dir}/{theme_pack}/", f"{backup_dir}/{folder}/{theme_pack}")
 
 def backup_background():
     image_properties = ["image-path", "last-image", "last-single-image"]
@@ -59,12 +59,19 @@ def backup_background():
 
 def restore():
     subprocess.run(f"tar -xzf {backup_dir}.tar.gz".split())
-    
-    copy_tree(f"{backup_dir}/xfce-settings", f"{user_path}/.config/xfce4")
-    copy_tree(f"{backup_dir}/thunar", f"{user_path}/.config/Thunar")
-    copy_tree(f"{backup_dir}/icons", f"{user_path}/.icons")
-    copy_tree(f"{backup_dir}/themes", f"{user_path}/.themes")
-    copy_tree(f"{backup_dir}/backgrounds", f"{user_path}/.backgrounds")
+    wrap_copy_tree(f"{user_path}/.config/xfce4", "/tmp/xfce4")
+    wrap_copy_tree(f"{user_path}/.config/Thunar", "/tmp/Thunar")
+    try:
+        wrap_copy_tree(f"{backup_dir}/xfce-settings", f"{user_path}/.config/xfce4")
+        wrap_copy_tree(f"{backup_dir}/thunar", f"{user_path}/.config/Thunar")
+        wrap_copy_tree(f"{backup_dir}/icons", f"{user_path}/.icons")
+        wrap_copy_tree(f"{backup_dir}/themes", f"{user_path}/.themes")
+        wrap_copy_tree(f"{backup_dir}/backgrounds", f"{user_path}/.backgrounds")
+    except Exception as e:
+        wrap_copy_tree("/tmp/xfce4", f"{user_path}/.config/xfce4")
+        wrap_copy_tree("/tmp/Thunar", f"{user_path}/.config/Thunar")
+        raise e
+        
 
 def handle_whisker():
     files = pathlib.Path(f'{backup_dir}/xfce-settings/panel').glob('**/*')
@@ -95,6 +102,9 @@ def get_xml_property_value(xml_file: str, xml_property_name: str) -> str:
 
 #def copy_tree(src: str, dest: str):
 #    shutil.copytree(src, dest, symlinks=True, dirs_exist_ok=True)
+
+def wrap_copy_tree(src: str, dest: str):
+    copy_tree(src,dest,preserve_symlinks=1)
 
 if __name__ == "__main__":
     if len(sys.argv) == 3:
