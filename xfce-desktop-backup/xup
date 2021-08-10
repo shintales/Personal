@@ -7,8 +7,8 @@ import xml.dom.minidom
 import shutil
 import subprocess
 
-backup_dir = sys.argv[1];
-user_path = os.path.expanduser('~')
+backup_dir = ""
+user_path = ""
 
 def setup_directories():
     folders = ["thunar", "xfce-settings", "themes", "icons", "backgrounds"]
@@ -96,7 +96,15 @@ def copy_tree(src: str, dest: str):
     shutil.copytree(src, dest, symlinks=True, dirs_exist_ok=True)
 
 if __name__ == "__main__":
-    setup_directories()
-    backup()
-    #restore()
-    #handle_whisker()
+    if len(sys.argv) == 3:
+        backup_dir = sys.argv[2];
+        user_path = os.path.expanduser('~')
+        if sys.argv[1] == "backup":
+            setup_directories()
+            backup()
+        elif sys.argv[1] == "restore":
+            restore()
+        else:
+            print("invalid")
+    else:
+        print("invalid")
